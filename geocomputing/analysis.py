@@ -126,6 +126,10 @@ def spatial_autocorrelation(
     """
     Calcula la autocorrelación espacial (Índice de Moran).
     
+    NOTA: Utiliza ponderación por distancia inversa que puede ser sensible
+    a puntos muy cercanos. Para análisis riguroso, considere esquemas de 
+    ponderación alternativos.
+    
     Args:
         points: Lista de coordenadas (lat, lon)
         values: Valores asociados a cada punto
@@ -189,7 +193,10 @@ def hotspot_analysis(
     
     n = len(points)
     mean_value = sum(values) / n
-    std_value = math.sqrt(sum((v - mean_value) ** 2 for v in values) / n)
+    # Usar desviación estándar muestral (n-1) para inferencia estadística
+    if n <= 1:
+        return []
+    std_value = math.sqrt(sum((v - mean_value) ** 2 for v in values) / (n - 1))
     
     if std_value == 0:
         return []

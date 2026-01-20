@@ -87,6 +87,9 @@ def calculate_distance(
         return R * c
     
     elif method == "euclidean":
+        # NOTA: Este método no es apropiado para coordenadas geográficas
+        # ya que trata lat/lon como coordenadas planas. Use solo para 
+        # coordenadas proyectadas o como aproximación burda.
         return math.sqrt((point2[0] - point1[0])**2 + (point2[1] - point1[1])**2)
     
     raise ValueError(f"Método desconocido: {method}")
@@ -95,6 +98,10 @@ def calculate_distance(
 def calculate_area(coordinates: List[Tuple[float, float]]) -> float:
     """
     Calcula el área de un polígono definido por coordenadas.
+    
+    NOTA: Esta es una aproximación simplificada que no considera la naturaleza
+    esférica de la Tierra. Para áreas grandes o precisión crítica, se recomienda
+    usar bibliotecas especializadas como GeoPandas o Shapely.
     
     Args:
         coordinates: Lista de tuplas (lat, lon) que definen el polígono
