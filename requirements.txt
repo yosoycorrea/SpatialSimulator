@@ -1,0 +1,11 @@
+# SpatialSimulator 2100 - Dependencies
+# Core dependencies for multimodal data fusion and multi-agent simulation
+
+# No external dependencies required for basic functionality
+# The implementation uses only Python standard library
+
+# Optional dependencies for enhanced functionality:
+# numpy>=1.24.0  # For numerical computations
+# networkx>=3.0  # For advanced graph operations
+# matplotlib>=3.7.0  # For visualizations
+# pandas>=2.0.0  # For data analysis
