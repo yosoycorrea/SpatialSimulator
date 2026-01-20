@@ -9,6 +9,11 @@ import math
 from typing import List, Tuple, Dict, Any
 from .spatial_ops import calculate_distance
 
+# Constantes para análisis estadístico
+DISTANCE_EPSILON = 0.1  # Pequeño valor para evitar división por cero en cálculos de distancia
+CONFIDENCE_95_THRESHOLD = 1.96  # Umbral de z-score para 95% de confianza
+CONFIDENCE_99_THRESHOLD = 2.58  # Umbral de z-score para 99% de confianza
+
 
 def detect_clusters(
     points: List[Tuple[float, float]], 
@@ -146,7 +151,7 @@ def spatial_autocorrelation(
                 if i != j:
                     # Peso basado en distancia inversa
                     dist = calculate_distance(points[i], points[j])
-                    w_ij = 1.0 / (dist + 0.1)  # +0.1 para evitar división por cero
+                    w_ij = 1.0 / (dist + DISTANCE_EPSILON)  # Evitar división por cero
                     
                     numerator += w_ij * (values[i] - mean_value) * (values[j] - mean_value)
                     w_sum += w_ij
@@ -206,9 +211,10 @@ def hotspot_analysis(
             local_mean = local_sum / local_count
             z_score = (local_mean - mean_value) / std_value
             
-            # Clasificar como hotspot o coldspot
-            if abs(z_score) > 1.96:  # 95% de confianza
+            # Clasificar como hotspot o coldspot (95% de confianza)
+            if abs(z_score) > CONFIDENCE_95_THRESHOLD:
                 hotspot_type = "hot" if z_score > 0 else "cold"
+                confidence = "high" if abs(z_score) > CONFIDENCE_99_THRESHOLD else "medium"
                 hotspots.append({
                     "index": i,
                     "coordinates": points[i],
@@ -216,7 +222,7 @@ def hotspot_analysis(
                     "local_mean": local_mean,
                     "z_score": z_score,
                     "type": hotspot_type,
-                    "confidence": "high" if abs(z_score) > 2.58 else "medium"
+                    "confidence": confidence
                 })
     
     return hotspots

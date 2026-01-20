@@ -8,6 +8,10 @@ incluyendo transformaciones de coordenadas, cálculos de distancia y área.
 import math
 from typing import Tuple, List, Dict, Any
 
+# Constantes
+DEGREES_TO_KM = 111.0  # Aproximación: 1 grado ≈ 111 km (varía con latitud)
+WEB_MERCATOR_MAX_LAT = 85.06  # Latitud máxima válida para Web Mercator
+
 
 def transform_coordinates(
     lat: float, 
@@ -29,6 +33,13 @@ def transform_coordinates(
     """
     # Implementación simplificada para WGS84 a Web Mercator
     if from_crs == "EPSG:4326" and to_crs == "EPSG:3857":
+        # Validar límites de latitud para Web Mercator
+        if abs(lat) > WEB_MERCATOR_MAX_LAT:
+            raise ValueError(
+                f"Latitud {lat} fuera del rango válido para Web Mercator "
+                f"(±{WEB_MERCATOR_MAX_LAT} grados)"
+            )
+        
         x = lon * 20037508.34 / 180.0
         y = math.log(math.tan((90 + lat) * math.pi / 360.0)) / (math.pi / 180.0)
         y = y * 20037508.34 / 180.0
@@ -106,8 +117,7 @@ def calculate_area(coordinates: List[Tuple[float, float]]) -> float:
     area = abs(area) / 2.0
     
     # Convertir a km² (aproximación simplificada)
-    # 1 grado ≈ 111 km
-    area_km2 = area * (111.0 ** 2)
+    area_km2 = area * (DEGREES_TO_KM ** 2)
     
     return area_km2
 
