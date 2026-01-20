@@ -499,11 +499,11 @@ def generar_escenario_2100(humano: Dict, espacial: Dict, temporal: Dict,
     visualizacion = visualizar_xr(evaluado, overlays=["justice", "risk", "access", "memory"])
     
     # Paso 8: Añadir metadatos de gobernanza y trazabilidad
-    from datetime import datetime
+    from datetime import datetime, timezone
     
     resultado = {
         "version": "1.0.0",
-        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
         "escenario_anio": temporal.get("horizonte", "2100"),
         "visualizacion": visualizacion,
         "evaluacion": {
