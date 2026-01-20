@@ -1,7 +1,7 @@
-# SpatialSimulator 2100 — Escenarios híbridos de inteligencias múltiples
+# SpatialSimulator 2026 — Escenarios híbridos de inteligencias múltiples
 
 ## Objetivo
-Generar escenarios del espacio híbrido (humano–IA–ecológico) en 2100, integrando datos multimodales, simulación multiagente y visualización 3D/AR/XR.
+Generar escenarios del espacio híbrido (humano–IA–ecológico), integrando datos multimodales, simulación multiagente y visualización 3D/AR/XR.
 
 ## Flujo
 1. **Entradas**: humano, espacial, temporal, ecológico.
@@ -16,7 +16,7 @@ Generar escenarios del espacio híbrido (humano–IA–ecológico) en 2100, inte
 ## Pseudocódigo
 
 ```python
-def generar_escenario_2100(humano, espacial, temporal, ecologico, reglas):
+def generar_escenario_(humano, espacial, temporal, ecologico, reglas):
     grafo = fusion_semantica(humano, espacial, temporal, ecologico)
     patrones, riesgos, inequidades = detectar_dinamicas(grafo)
     agentes = construir_agentes(["eficiencia", "equidad", "biodiversidad", "memoria"])
