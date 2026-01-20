@@ -34,7 +34,7 @@ v1.2
 Tu texto ya está muy sólido. Solo voy a:
 
 Mantener todo tu contenido.  
-Asegurar que todas las referencias al futuro extremo digan 2026 (no 2100).
+Asegurar que todas las referencias al futuro extremo digan 2026.
 
 Te lo dejo limpio y coherente:
 
