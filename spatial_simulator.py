@@ -26,14 +26,6 @@ class KnowledgeGraph:
 
 
 @dataclass
-class DynamicsResult:
-    """Resultado del análisis de dinámicas"""
-    patrones: List[str]
-    riesgos: List[str]
-    inequidades: List[str]
-
-
-@dataclass
 class Agent:
     """Agente multiobjetivo"""
     nombre: str
@@ -192,6 +184,13 @@ def simular_negociacion(agentes: List[Agent], patrones: List[str],
     
     # Simular consensos basados en prioridades
     prioridades_totales = sum(a.prioridad for a in agentes)
+    
+    # Evitar división por cero si todos los agentes tienen prioridad 0
+    if prioridades_totales == 0:
+        prioridades_totales = len(agentes) if agentes else 1
+        for agente in agentes:
+            agente.prioridad = 1.0
+    
     for agente in agentes:
         peso = agente.prioridad / prioridades_totales
         negociado["consensos"].append({
@@ -500,9 +499,12 @@ def generar_escenario_2100(humano: Dict, espacial: Dict, temporal: Dict,
     visualizacion = visualizar_xr(evaluado, overlays=["justice", "risk", "access", "memory"])
     
     # Paso 8: Añadir metadatos de gobernanza y trazabilidad
+    from datetime import datetime
+    
     resultado = {
         "version": "1.0.0",
-        "timestamp": "2100-01-01T00:00:00Z",
+        "timestamp": datetime.utcnow().isoformat() + "Z",
+        "escenario_anio": temporal.get("horizonte", "2100"),
         "visualizacion": visualizacion,
         "evaluacion": {
             "escenarios": [
