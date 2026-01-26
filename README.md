@@ -13,6 +13,54 @@ Generar escenarios del espacio híbrido (humano–IA–ecológico), integrando d
 7. **Visualización**: 3D/AR/XR con capas semánticas.
 8. **Gobernanza**: reglas machine-readable y trazabilidad.
 
+## Módulo Geocomputing
+
+El módulo `/geocomputing` proporciona funcionalidades de procesamiento geoespacial para las simulaciones:
+
+### Características principales
+
+- **Operaciones espaciales básicas** (`spatial_ops.py`)
+  - Transformación de coordenadas entre sistemas de referencia
+  - Cálculo de distancias (Haversine, Euclidiana)
+  - Cálculo de áreas de polígonos
+  - Operaciones de superposición espacial (intersección, unión, diferencia)
+
+- **Análisis espacial avanzado** (`analysis.py`)
+  - Detección de clusters espaciales (DBSCAN)
+  - Autocorrelación espacial (Índice de Moran)
+  - Análisis de puntos calientes (hotspots/coldspots)
+
+### Uso
+
+```python
+from geocomputing import (
+    transform_coordinates,
+    calculate_distance,
+    detect_clusters,
+    hotspot_analysis
+)
+
+# Transformar coordenadas
+x, y = transform_coordinates(lat=19.43, lon=-99.13)
+
+# Calcular distancia entre dos puntos
+dist = calculate_distance(point1=(19.43, -99.13), point2=(20.66, -103.35))
+
+# Detectar clusters espaciales
+clusters = detect_clusters(puntos, radius=10.0, min_points=3)
+
+# Análisis de hotspots
+hotspots = hotspot_analysis(puntos, valores, radius=5.0)
+```
+
+### Ejemplo completo
+
+Ejecuta el script de ejemplo para ver todas las funcionalidades:
+
+```bash
+python3 ejemplo_geocomputing.py
+```
+
 ## Pseudocódigo
 
 ```python
