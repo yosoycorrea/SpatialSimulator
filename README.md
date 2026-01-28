@@ -1,27 +1,26 @@
-## SpatialSimulator 2026 — Escenarios híbridos de inteligencias múltiples
+# Spatial Simulator
 
-### Objetivo
-Generar escenarios del espacio híbrido (humano–IA–ecológico), integrando datos multimodales, simulación multiagente y visualización 3D/AR/XR.
+## Overview
 
-### Flujo
-- **Entradas**: humano, espacial, temporal, ecológico.  
-- **Fusión semántica**: grafo de conocimiento.  
-- **Dinámicas**: patrones, inequidades, riesgos.  
-- **Simulación multiagente**: eficiencia, equidad, biodiversidad, memoria.  
-- **Generación de escenarios**: base, disruptivo, utópico, híbrido.  
-- **Evaluación**: trade-offs, XAI, auditoría ética.  
-- **Visualización**: 3D/AR/XR con capas semánticas.  
-- **Gobernanza**: reglas machine-readable y trazabilidad.
+Spatial Simulator is a tool designed for understanding spatial dynamics and their implications on society. While it originated with a focus on ecology, we now emphasize the concept of space as a social construct, inviting users to explore how spatial arrangements influence social interactions, cultural expressions, and community formation.
 
-### Pseudocódigo
+## Features
+- Interactive simulations to explore various spatial scenarios.
+- Analytical tools to assess the impact of spatial decisions on social constructs.
+- Community-driven insights and contributions that highlight the diversity of spatial experiences.
 
-```python
-def generar_escenario_(humano, espacial, temporal, ecologico, reglas):
-    grafo = fusion_semantica(humano, espacial, temporal, ecologico)
-    patrones, riesgos, inequidades = detectar_dinamicas(grafo)
-    agentes = construir_agentes(["eficiencia", "equidad", "biodiversidad", "memoria"])
-    negociado = simular_negociacion(agentes, patrones, restricciones=ecologico)
-    futuros = generar_variantes(negociado, modos=["base","disruptivo","utopico","hibrido"])
-    evaluado = evaluar_tradeoffs(futuros, reglas, xai=True, auditoria=True)
-    return visualizar_xr(evaluado, overlays=["justice","risk","access","memory"])
-```
+## Getting Started
+
+To get started with Spatial Simulator, clone the repository and install the required dependencies. Further instructions can be found in the installation section.
+
+## Contributing
+
+We welcome contributions that enrich our understanding of space as a tapestry woven through social contexts. Please follow the contributing guidelines in this repository.
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+Thanks to all contributors and users who are helping to reshape our understanding of space as a social construct.
