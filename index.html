@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spatial Simulator Lite - Educational Edition</title>
+    
+    <!-- Leaflet CSS for map visualization -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1>🌍 Spatial Simulator Lite</h1>
+            <p class="subtitle">Explore and understand your spatial environment</p>
+            <button id="tutorial-btn" class="btn-tutorial">📚 Start Tutorial</button>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <div class="container main-content">
+        
+        <!-- Sidebar Panel -->
+        <aside class="sidebar">
+            <div class="panel">
+                <h2>🎯 Quick Start</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="location">📍 Location</button>
+                    <button class="tab-btn" data-tab="elements">🏗️ Elements</button>
+                    <button class="tab-btn" data-tab="scenarios">🎮 Scenarios</button>
+                </div>
+
+                <!-- Location Tab -->
+                <div id="location-tab" class="tab-content active">
+                    <h3>Set Your Location</h3>
+                    <div class="form-group">
+                        <label for="user-location">Enter Address or Coordinates:</label>
+                        <input type="text" id="user-location" placeholder="e.g., New York, NY" class="input-field">
+                        <button id="set-location-btn" class="btn-primary">📍 Set Location</button>
+                    </div>
+                    <div class="form-group">
+                        <button id="use-current-location-btn" class="btn-secondary">📡 Use My Location</button>
+                    </div>
+                    <div id="current-coords" class="info-box"></div>
+                </div>
+
+                <!-- Elements Tab -->
+                <div id="elements-tab" class="tab-content">
+                    <h3>Manage Elements</h3>
+                    
+                    <!-- Services/Points of Interest -->
+                    <div class="element-section">
+                        <h4>🏪 Points of Interest</h4>
+                        <select id="poi-type" class="input-field">
+                            <option value="school">🏫 School</option>
+                            <option value="hospital">🏥 Hospital</option>
+                            <option value="park">🌳 Park</option>
+                            <option value="store">🏪 Store</option>
+                            <option value="restaurant">🍽️ Restaurant</option>
+                        </select>
+                        <input type="text" id="poi-name" placeholder="Name" class="input-field">
+                        <button id="add-poi-btn" class="btn-primary">➕ Add POI</button>
+                        <div id="poi-list" class="element-list"></div>
+                    </div>
+
+                    <!-- Agents (People) -->
+                    <div class="element-section">
+                        <h4>👤 Agents (People)</h4>
+                        <input type="text" id="agent-name" placeholder="Agent name" class="input-field">
+                        <select id="agent-type" class="input-field">
+                            <option value="resident">🏠 Resident</option>
+                            <option value="worker">💼 Worker</option>
+                            <option value="student">🎓 Student</option>
+                            <option value="visitor">🚶 Visitor</option>
+                        </select>
+                        <button id="add-agent-btn" class="btn-primary">➕ Add Agent</button>
+                        <div id="agent-list" class="element-list"></div>
+                    </div>
+
+                    <!-- Zones -->
+                    <div class="element-section">
+                        <h4>🗺️ Zones</h4>
+                        <select id="zone-type" class="input-field">
+                            <option value="residential">🏘️ Residential</option>
+                            <option value="commercial">🏢 Commercial</option>
+                            <option value="industrial">🏭 Industrial</option>
+                            <option value="recreational">🎪 Recreational</option>
+                        </select>
+                        <input type="text" id="zone-name" placeholder="Zone name" class="input-field">
+                        <button id="add-zone-btn" class="btn-primary">➕ Add Zone</button>
+                        <div id="zone-list" class="element-list"></div>
+                    </div>
+
+                    <!-- Connections -->
+                    <div class="element-section">
+                        <h4>🛣️ Connections</h4>
+                        <select id="connection-type" class="input-field">
+                            <option value="road">🚗 Road</option>
+                            <option value="bus">🚌 Bus Route</option>
+                            <option value="train">🚆 Train</option>
+                            <option value="bike">🚴 Bike Path</option>
+                            <option value="walk">🚶 Walking Path</option>
+                        </select>
+                        <button id="add-connection-btn" class="btn-primary">➕ Add Connection</button>
+                        <div id="connection-list" class="element-list"></div>
+                    </div>
+                </div>
+
+                <!-- Scenarios Tab -->
+                <div id="scenarios-tab" class="tab-content">
+                    <h3>Learning Scenarios</h3>
+                    
+                    <div class="scenario-card">
+                        <h4>🔍 Explore Your Environment</h4>
+                        <p>Discover the key features of your immediate surroundings.</p>
+                        <button class="btn-scenario" data-scenario="explore">Start Scenario</button>
+                    </div>
+
+                    <div class="scenario-card">
+                        <h4>🚌 Transportation Impact</h4>
+                        <p>See how changes in transportation affect accessibility.</p>
+                        <button class="btn-scenario" data-scenario="transport">Start Scenario</button>
+                    </div>
+
+                    <div class="scenario-card">
+                        <h4>🏘️ Urban Planning</h4>
+                        <p>Design and analyze different urban layouts.</p>
+                        <button class="btn-scenario" data-scenario="urban">Start Scenario</button>
+                    </div>
+
+                    <div class="scenario-card">
+                        <h4>📊 Distance Analysis</h4>
+                        <p>Calculate and visualize distances between points.</p>
+                        <button class="btn-scenario" data-scenario="distance">Start Scenario</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Visualization Area -->
+        <main class="visualization-area">
+            <div class="panel">
+                <div class="viz-header">
+                    <h2>📊 Visualization</h2>
+                    <div class="viz-controls">
+                        <button id="clear-map-btn" class="btn-icon" title="Clear Map">🗑️ Clear</button>
+                        <button id="export-btn" class="btn-icon" title="Export Data">💾 Export</button>
+                        <button id="help-btn" class="btn-icon" title="Help">❓ Help</button>
+                    </div>
+                </div>
+                
+                <!-- Map Container -->
+                <div id="map" class="map-container"></div>
+
+                <!-- Info Panel -->
+                <div id="info-panel" class="info-panel">
+                    <h3>ℹ️ Information</h3>
+                    <div id="info-content">
+                        <p>Click on the map to add points, or use the sidebar to get started!</p>
+                    </div>
+                </div>
+
+                <!-- Statistics Panel -->
+                <div id="stats-panel" class="stats-panel">
+                    <h3>📈 Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">Points of Interest:</span>
+                            <span id="stat-poi" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Agents:</span>
+                            <span id="stat-agents" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Zones:</span>
+                            <span id="stat-zones" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Connections:</span>
+                            <span id="stat-connections" class="stat-value">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div id="tutorial-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="tutorial-content">
+                <!-- Tutorial content will be loaded here -->
+            </div>
+            <div class="tutorial-navigation">
+                <button id="prev-tutorial" class="btn-secondary">← Previous</button>
+                <span id="tutorial-progress"></span>
+                <button id="next-tutorial" class="btn-primary">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <!-- Main Application Script -->
+    <script src="app.js"></script>
+</body>
+</html>
