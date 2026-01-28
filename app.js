@@ -15,6 +15,7 @@
 const AppState = {
     map: null,
     userLocation: null,
+    userLocationMarker: null, // Track user location marker to prevent duplicates
     elements: {
         pois: [],
         agents: [],
@@ -233,7 +234,12 @@ async function setUserLocation() {
     // Use Nominatim for geocoding (free OSM service)
     try {
         const response = await fetch(
-            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationInput)}`
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(locationInput)}`,
+            {
+                headers: {
+                    'User-Agent': 'SpatialSimulatorLite/1.0 (Educational Tool)'
+                }
+            }
         );
         const data = await response.json();
 
@@ -244,8 +250,13 @@ async function setUserLocation() {
             AppState.userLocation = [lat, lon];
             AppState.map.setView(AppState.userLocation, 15);
 
+            // Remove previous user location marker if it exists
+            if (AppState.userLocationMarker) {
+                AppState.map.removeLayer(AppState.userLocationMarker);
+            }
+
             // Add marker for user location
-            const marker = L.marker(AppState.userLocation, {
+            AppState.userLocationMarker = L.marker(AppState.userLocation, {
                 icon: L.divIcon({
                     className: 'user-location-marker',
                     html: '📍',
@@ -253,18 +264,23 @@ async function setUserLocation() {
                 })
             }).addTo(AppState.map);
             
-            marker.bindPopup(`<strong>Your Location</strong><br>${data[0].display_name}`).openPopup();
+            const escapedDisplayName = escapeHtml(data[0].display_name);
+            AppState.userLocationMarker.bindPopup(`<strong>Your Location</strong><br>${escapedDisplayName}`).openPopup();
 
             document.getElementById('current-coords').innerHTML = 
                 `<strong>Current Location:</strong><br>Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
 
-            showInfo(`Location set to: ${data[0].display_name}`);
+            showInfo(`Location set to: ${escapedDisplayName}`);
         } else {
             showInfo('Location not found. Please try another address.');
         }
     } catch (error) {
         console.error('Geocoding error:', error);
-        showInfo('Error finding location. Please try again.');
+        if (error.name === 'TypeError') {
+            showInfo('Network error. Please check your internet connection.');
+        } else {
+            showInfo('Error finding location. Please try again.');
+        }
     }
 }
 
@@ -287,7 +303,12 @@ function useCurrentLocation() {
             AppState.userLocation = [lat, lon];
             AppState.map.setView(AppState.userLocation, 15);
 
-            const marker = L.marker(AppState.userLocation, {
+            // Remove previous user location marker if it exists
+            if (AppState.userLocationMarker) {
+                AppState.map.removeLayer(AppState.userLocationMarker);
+            }
+
+            AppState.userLocationMarker = L.marker(AppState.userLocation, {
                 icon: L.divIcon({
                     className: 'user-location-marker',
                     html: '📍',
@@ -295,7 +316,7 @@ function useCurrentLocation() {
                 })
             }).addTo(AppState.map);
             
-            marker.bindPopup('<strong>Your Current Location</strong>').openPopup();
+            AppState.userLocationMarker.bindPopup('<strong>Your Current Location</strong>').openPopup();
 
             document.getElementById('current-coords').innerHTML = 
                 `<strong>Current Location:</strong><br>Lat: ${lat.toFixed(4)}, Lon: ${lon.toFixed(4)}`;
@@ -312,6 +333,29 @@ function useCurrentLocation() {
 // ===========================
 // Element Management
 // ===========================
+
+/**
+ * Generate unique ID for elements
+ */
+let uniqueIdCounter = 0;
+function generateUniqueId() {
+    return `${Date.now()}-${uniqueIdCounter++}`;
+}
+
+/**
+ * Escape HTML to prevent XSS attacks
+ * @param {string} unsafe - Unsafe string that may contain HTML
+ * @returns {string} Escaped safe string
+ */
+function escapeHtml(unsafe) {
+    if (!unsafe) return '';
+    return unsafe
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
 
 /**
  * Add a Point of Interest
@@ -336,7 +380,7 @@ function addPointOfInterest() {
     }
 
     const poi = {
-        id: Date.now(),
+        id: generateUniqueId(),
         type: poiType,
         name: poiName,
         location: location
@@ -350,7 +394,7 @@ function addPointOfInterest() {
     // Clear input
     document.getElementById('poi-name').value = '';
 
-    showInfo(`Added ${poiName}`);
+    showInfo(`Added ${escapeHtml(poiName)}`);
 }
 
 /**
@@ -368,10 +412,13 @@ function renderPOI(poi) {
         draggable: true
     }).addTo(AppState.layers.pois);
 
+    const escapedName = escapeHtml(poi.name);
+    const escapedType = escapeHtml(getTypeLabel(poi.type));
+    
     marker.bindPopup(`
-        <strong>${poi.name}</strong><br>
-        Type: ${getTypeLabel(poi.type)}<br>
-        <button onclick="removePOI(${poi.id})" class="btn-remove">Remove</button>
+        <strong>${escapedName}</strong><br>
+        Type: ${escapedType}<br>
+        <button onclick="removePOI('${poi.id}')" class="btn-remove">Remove</button>
     `);
 
     // Update location on drag
@@ -403,7 +450,7 @@ function addAgent() {
     }
 
     const agent = {
-        id: Date.now(),
+        id: generateUniqueId(),
         type: agentType,
         name: agentName,
         location: location
@@ -415,7 +462,7 @@ function addAgent() {
     updateStatistics();
 
     document.getElementById('agent-name').value = '';
-    showInfo(`Added ${agentName}`);
+    showInfo(`Added ${escapeHtml(agentName)}`);
 }
 
 /**
@@ -433,10 +480,13 @@ function renderAgent(agent) {
         draggable: true
     }).addTo(AppState.layers.agents);
 
+    const escapedName = escapeHtml(agent.name);
+    const escapedType = escapeHtml(getTypeLabel(agent.type));
+
     marker.bindPopup(`
-        <strong>${agent.name}</strong><br>
-        Type: ${getTypeLabel(agent.type)}<br>
-        <button onclick="removeAgent(${agent.id})" class="btn-remove">Remove</button>
+        <strong>${escapedName}</strong><br>
+        Type: ${escapedType}<br>
+        <button onclick="removeAgent('${agent.id}')" class="btn-remove">Remove</button>
     `);
 
     marker.on('dragend', function(e) {
@@ -467,7 +517,7 @@ function addZone() {
     }
 
     const zone = {
-        id: Date.now(),
+        id: generateUniqueId(),
         type: zoneType,
         name: zoneName,
         center: centerLocation,
@@ -480,7 +530,7 @@ function addZone() {
     updateStatistics();
 
     document.getElementById('zone-name').value = '';
-    showInfo(`Added ${zoneName}`);
+    showInfo(`Added ${escapeHtml(zoneName)}`);
 }
 
 /**
@@ -496,11 +546,14 @@ function renderZone(zone) {
         radius: zone.radius
     }).addTo(AppState.layers.zones);
 
+    const escapedName = escapeHtml(zone.name);
+    const escapedType = escapeHtml(getTypeLabel(zone.type));
+
     circle.bindPopup(`
-        <strong>${zone.name}</strong><br>
-        Type: ${getTypeLabel(zone.type)}<br>
+        <strong>${escapedName}</strong><br>
+        Type: ${escapedType}<br>
         Radius: ${zone.radius}m<br>
-        <button onclick="removeZone(${zone.id})" class="btn-remove">Remove</button>
+        <button onclick="removeZone('${zone.id}')" class="btn-remove">Remove</button>
     `);
 
     zone.circle = circle;
@@ -547,7 +600,7 @@ function onMapClick(e) {
  */
 function createConnection(point1, point2, type) {
     const connection = {
-        id: Date.now(),
+        id: generateUniqueId(),
         type: type,
         points: [point1, point2],
         name: `${getTypeLabel(type)} Connection`
@@ -558,7 +611,7 @@ function createConnection(point1, point2, type) {
     updateElementList('connection');
     updateStatistics();
 
-    showInfo(`Created ${connection.name}`);
+    showInfo(`Created ${escapeHtml(connection.name)}`);
 }
 
 /**
@@ -575,12 +628,14 @@ function renderConnection(connection) {
     }).addTo(AppState.layers.connections);
 
     const distance = calculateDistance(connection.points[0], connection.points[1]);
+    const escapedName = escapeHtml(connection.name);
+    const escapedType = escapeHtml(getTypeLabel(connection.type));
 
     polyline.bindPopup(`
-        <strong>${connection.name}</strong><br>
-        Type: ${getTypeLabel(connection.type)}<br>
+        <strong>${escapedName}</strong><br>
+        Type: ${escapedType}<br>
         Distance: ${distance.toFixed(2)} km<br>
-        <button onclick="removeConnection(${connection.id})" class="btn-remove">Remove</button>
+        <button onclick="removeConnection('${connection.id}')" class="btn-remove">Remove</button>
     `);
 
     connection.polyline = polyline;
@@ -658,13 +713,30 @@ function updateElementList(type) {
     elements.forEach(element => {
         const item = document.createElement('div');
         item.className = 'element-item';
-        item.innerHTML = `
-            <div class="element-item-info">
-                <div class="element-item-name">${element.name}</div>
-                <div class="element-item-type">${getTypeLabel(element.type)}</div>
-            </div>
-            <button class="btn-remove" onclick="remove${capitalizeFirst(type)}(${element.id})">×</button>
-        `;
+        
+        // Create info div
+        const info = document.createElement('div');
+        info.className = 'element-item-info';
+        
+        const nameDiv = document.createElement('div');
+        nameDiv.className = 'element-item-name';
+        nameDiv.textContent = element.name; // Use textContent to prevent XSS
+        
+        const typeDiv = document.createElement('div');
+        typeDiv.className = 'element-item-type';
+        typeDiv.textContent = getTypeLabel(element.type);
+        
+        info.appendChild(nameDiv);
+        info.appendChild(typeDiv);
+        
+        // Create button
+        const button = document.createElement('button');
+        button.className = 'btn-remove';
+        button.textContent = '×';
+        button.onclick = () => window[`remove${capitalizeFirst(type)}`](element.id);
+        
+        item.appendChild(info);
+        item.appendChild(button);
         list.appendChild(item);
     });
 }
