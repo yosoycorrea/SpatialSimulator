@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spatial Simulator Lite - Demo</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Demo-specific styles */
+        .demo-map {
+            width: 100%;
+            height: 500px;
+            background: linear-gradient(to bottom, #e0f2fe 0%, #f0f9ff 100%);
+            border: 2px dashed var(--border-color);
+            border-radius: 0.375rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            text-align: center;
+            padding: 2rem;
+        }
+        
+        .demo-notice {
+            background-color: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.375rem;
+        }
+        
+        .feature-check {
+            color: var(--secondary-color);
+            margin-right: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <h1>🌍 Spatial Simulator Lite</h1>
+            <p class="subtitle">Explore and understand your spatial environment</p>
+            <button id="tutorial-btn" class="btn-tutorial">📚 Start Tutorial</button>
+        </div>
+    </header>
+
+    <!-- Demo Notice -->
+    <div class="container" style="margin-top: 1.5rem;">
+        <div class="demo-notice">
+            <h3 style="margin: 0 0 0.5rem 0;">📢 Demo Mode</h3>
+            <p style="margin: 0; font-size: 0.875rem;">
+                This is a demonstration of the Spatial Simulator Lite interface. 
+                For full functionality with interactive maps, please ensure you have an internet connection 
+                and open <strong>index.html</strong> in a web browser.
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container main-content">
+        
+        <!-- Sidebar Panel -->
+        <aside class="sidebar">
+            <div class="panel">
+                <h2>🎯 Quick Start</h2>
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="location">📍 Location</button>
+                    <button class="tab-btn" data-tab="elements">🏗️ Elements</button>
+                    <button class="tab-btn" data-tab="scenarios">🎮 Scenarios</button>
+                </div>
+
+                <!-- Location Tab -->
+                <div id="location-tab" class="tab-content active">
+                    <h3>Set Your Location</h3>
+                    <div class="form-group">
+                        <label for="user-location">Enter Address or Coordinates:</label>
+                        <input type="text" id="user-location" placeholder="e.g., New York, NY" class="input-field" value="New York, NY">
+                        <button class="btn-primary">📍 Set Location</button>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn-secondary">📡 Use My Location</button>
+                    </div>
+                    <div class="info-box">
+                        <strong>Demo Location:</strong><br>
+                        Lat: 40.7128, Lon: -74.0060<br>
+                        <small>(New York City)</small>
+                    </div>
+                </div>
+
+                <!-- Elements Tab -->
+                <div id="elements-tab" class="tab-content">
+                    <h3>Manage Elements</h3>
+                    
+                    <div class="element-section">
+                        <h4>🏪 Points of Interest</h4>
+                        <select class="input-field">
+                            <option value="school">🏫 School</option>
+                            <option value="hospital">🏥 Hospital</option>
+                            <option value="park">🌳 Park</option>
+                            <option value="store">🏪 Store</option>
+                            <option value="restaurant">🍽️ Restaurant</option>
+                        </select>
+                        <input type="text" placeholder="Name" class="input-field">
+                        <button class="btn-primary">➕ Add POI</button>
+                        <div class="element-list">
+                            <div class="element-item">
+                                <div class="element-item-info">
+                                    <div class="element-item-name">Central Park</div>
+                                    <div class="element-item-type">Park</div>
+                                </div>
+                                <button class="btn-remove">×</button>
+                            </div>
+                            <div class="element-item">
+                                <div class="element-item-info">
+                                    <div class="element-item-name">City Hospital</div>
+                                    <div class="element-item-type">Hospital</div>
+                                </div>
+                                <button class="btn-remove">×</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="element-section">
+                        <h4>👤 Agents (People)</h4>
+                        <input type="text" placeholder="Agent name" class="input-field">
+                        <select class="input-field">
+                            <option value="resident">🏠 Resident</option>
+                            <option value="worker">💼 Worker</option>
+                            <option value="student">🎓 Student</option>
+                            <option value="visitor">🚶 Visitor</option>
+                        </select>
+                        <button class="btn-primary">➕ Add Agent</button>
+                    </div>
+
+                    <div class="element-section">
+                        <h4>🗺️ Zones</h4>
+                        <select class="input-field">
+                            <option value="residential">🏘️ Residential</option>
+                            <option value="commercial">🏢 Commercial</option>
+                            <option value="industrial">🏭 Industrial</option>
+                            <option value="recreational">🎪 Recreational</option>
+                        </select>
+                        <input type="text" placeholder="Zone name" class="input-field">
+                        <button class="btn-primary">➕ Add Zone</button>
+                    </div>
+
+                    <div class="element-section">
+                        <h4>🛣️ Connections</h4>
+                        <select class="input-field">
+                            <option value="road">🚗 Road</option>
+                            <option value="bus">🚌 Bus Route</option>
+                            <option value="train">🚆 Train</option>
+                            <option value="bike">🚴 Bike Path</option>
+                            <option value="walk">🚶 Walking Path</option>
+                        </select>
+                        <button class="btn-primary">➕ Add Connection</button>
+                    </div>
+                </div>
+
+                <!-- Scenarios Tab -->
+                <div id="scenarios-tab" class="tab-content">
+                    <h3>Learning Scenarios</h3>
+                    
+                    <div class="scenario-card">
+                        <h4>🔍 Explore Your Environment</h4>
+                        <p>Discover the key features of your immediate surroundings.</p>
+                        <button class="btn-scenario">Start Scenario</button>
+                    </div>
+
+                    <div class="scenario-card">
+                        <h4>🚌 Transportation Impact</h4>
+                        <p>See how changes in transportation affect accessibility.</p>
+                        <button class="btn-scenario">Start Scenario</button>
+                    </div>
+
+                    <div class="scenario-card">
+                        <h4>🏘️ Urban Planning</h4>
+                        <p>Design and analyze different urban layouts.</p>
+                        <button class="btn-scenario">Start Scenario</button>
+                    </div>
+
+                    <div class="scenario-card">
+                        <h4>📊 Distance Analysis</h4>
+                        <p>Calculate and visualize distances between points.</p>
+                        <button class="btn-scenario">Start Scenario</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Visualization Area -->
+        <main class="visualization-area">
+            <div class="panel">
+                <div class="viz-header">
+                    <h2>📊 Visualization</h2>
+                    <div class="viz-controls">
+                        <button class="btn-icon" title="Clear Map">🗑️ Clear</button>
+                        <button class="btn-icon" title="Export Data">💾 Export</button>
+                        <button class="btn-icon" title="Help">❓ Help</button>
+                    </div>
+                </div>
+                
+                <!-- Demo Map Placeholder -->
+                <div class="demo-map">
+                    <div>
+                        <h3 style="margin-top: 0;">Interactive Map Displays Here</h3>
+                        <p style="max-width: 500px; margin: 1rem auto;">
+                            In the full version (index.html with internet connection), 
+                            this area shows an interactive OpenStreetMap with Leaflet.js, 
+                            allowing you to:
+                        </p>
+                        <ul style="text-align: left; display: inline-block;">
+                            <li><span class="feature-check">✓</span> Pan and zoom the map</li>
+                            <li><span class="feature-check">✓</span> Add markers by clicking</li>
+                            <li><span class="feature-check">✓</span> Drag and drop elements</li>
+                            <li><span class="feature-check">✓</span> Draw connections between points</li>
+                            <li><span class="feature-check">✓</span> View real geographical data</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Info Panel -->
+                <div class="info-panel">
+                    <h3>ℹ️ Information</h3>
+                    <div>
+                        <h4 style="margin: 0 0 0.5rem 0;">Welcome to Spatial Simulator Lite!</h4>
+                        <p style="margin: 0; font-size: 0.875rem;">
+                            This educational tool helps you understand spatial relationships and geographic dynamics. 
+                            Use the sidebar to add elements like points of interest, agents, zones, and connections.
+                        </p>
+                        <p style="margin: 0.5rem 0 0 0; font-size: 0.875rem; color: var(--text-secondary);">
+                            <strong>Tip:</strong> Try the "Explore Your Environment" scenario to get started!
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Statistics Panel -->
+                <div class="stats-panel">
+                    <h3>📈 Statistics</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-label">Points of Interest:</span>
+                            <span class="stat-value">2</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Agents:</span>
+                            <span class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Zones:</span>
+                            <span class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">Connections:</span>
+                            <span class="stat-value">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Tutorial Modal -->
+    <div id="tutorial-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="tutorial-content">
+                <h2>Welcome to Spatial Simulator Lite! 🌍</h2>
+                <p>This tool helps you understand spatial relationships and geographic dynamics in your environment.</p>
+                <h4>What you'll learn:</h4>
+                <ul>
+                    <li>How to map your environment</li>
+                    <li>Understanding spatial relationships</li>
+                    <li>Analyzing distances and accessibility</li>
+                    <li>Impact of urban planning decisions</li>
+                </ul>
+            </div>
+            <div class="tutorial-navigation">
+                <button class="btn-secondary" disabled>← Previous</button>
+                <span>Step 1 of 6</span>
+                <button class="btn-primary">Next →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Simple demo JavaScript for tab switching and modal
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabName = btn.dataset.tab;
+                    
+                    // Update buttons
+                    document.querySelectorAll('.tab-btn').forEach(b => {
+                        b.classList.toggle('active', b.dataset.tab === tabName);
+                    });
+                    
+                    // Update content
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.toggle('active', content.id === `${tabName}-tab`);
+                    });
+                });
+            });
+            
+            // Tutorial modal
+            const modal = document.getElementById('tutorial-modal');
+            document.getElementById('tutorial-btn').addEventListener('click', () => {
+                modal.classList.add('active');
+            });
+            
+            document.querySelector('.close-modal').addEventListener('click', () => {
+                modal.classList.remove('active');
+            });
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
